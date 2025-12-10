@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>КОПІСЕРВІС | Контакти та Калькулятор</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --yellow: #ffe100;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --shadow-heavy: rgba(255, 225, 0, 0.5);
+            --shadow-light: rgba(0, 0, 0, 0.2);
+        }
+
+        /* ОСНОВНІ СТИЛІ (Мобільний First) - СУЦІЛЬНИЙ ПОТІК */
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px 10px;
+            text-align: center;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-direction: column; 
+            gap: 20px; /* Зменшуємо відступ між блоками на мобільних */
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* На мобільних блоки візуально об'єднані */
+        .container, .calculator-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 25px 20px;
+            background-color: var(--black);
+            border-radius: 15px;
+            box-shadow: none; /* Прибираємо тінь на мобільних */
+            border: none; /* Прибираємо рамку на мобільних */
+            /* Додаємо невеликий margin, щоб вони не злипалися повністю */
+            margin-bottom: 0px; 
+        }
+        
+        .header { margin-bottom: 20px; }
+        h1 { font-size: 28px; color: var(--yellow); font-weight: 800; text-shadow: 0 0 5px var(--yellow); margin-bottom: 5px; }
+        p { font-size: 15px; color: var(--white); margin-top: 0; opacity: 0.9; }
+        .links { display: flex; flex-direction: column; gap: 12px; }
+
+        /* Стилі кнопок */
+        .link-button {
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
+            color: var(--black); background: var(--yellow); padding: 15px; border-radius: 10px;
+            font-size: 16px; font-weight: 800; box-shadow: 0 4px 10px var(--shadow-light);
+            transition: all 0.3s ease; border: 1px solid var(--yellow);
+        }
+        .link-button i { font-size: 20px; color: var(--black); margin-right: 10px; transition: color 0.3s ease; }
+        .link-button.primary { box-shadow: 0 8px 25px var(--shadow-heavy); }
+        .link-button:hover { transform: translateY(-3px); background: var(--black); color: var(--yellow); box-shadow: 0 8px 20px var(--shadow-heavy); border: 1px solid var(--yellow); }
+        .link-button:hover i { color: var(--yellow); }
+        .link-button:active { transform: translateY(0); background: var(--yellow); color: var(--black); }
+        .link-button:active i { color: var(--black); }
+
+        /* Стилі калькулятора */
+        .calculator-container h2 { color: var(--yellow); font-size: 22px; margin-top: 0; margin-bottom: 20px; font-weight: 800; }
+        .calc-form { display: flex; flex-direction: column; gap: 15px; text-align: left; }
+        .calc-row { position: relative; }
+        .calc-form select, .calc-form input {
+            appearance: none; -webkit-appearance: none; -moz-appearance: none;
+            padding: 10px 15px; padding-right: 40px;
+            border-radius: 8px; border: 2px solid var(--yellow);
+            background-color: #333333; color: var(--yellow);
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s ease; box-shadow: 0 0 5px rgba(255, 225, 0, 0.2);
+        }
+        .calc-row:has(select)::after {
+            content: '\25BC'; position: absolute; top: 65%; right: 15px;
+            transform: translateY(-50%); color: var(--yellow); font-size: 12px; pointer-events: none;
+        }
+
+        /* Секція результату */
+        #result-block {
+            margin-top: 25px; padding: 15px; background-color: var(--yellow);
+            border-radius: 10px; font-size: 22px; font-weight: 800; color: var(--black);
+            box-shadow: 0 0 15px rgba(255, 225, 0, 0.6); text-align: center;
+        }
+        #result-block #total-price {
+            font-size: 26px; color: var(--black);
+        }
+
+        /* ======================================= */
+        /* МЕДІАЗАПИТИ */
+        /* ======================================= */
+
+        /* 1. ПЛАНШЕТИ І БІЛЬШЕ (від 600px) - ПОВЕРТАЄМО БЛОЧНИЙ ВИГЛЯД */
+        @media (min-width: 600px) {
+            body {
+                padding: 30px;
+            }
+            .main-wrapper {
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                align-items: flex-start;
+                gap: 40px; /* Збільшуємо відступ між блоками */
+            }
+            
+            /* На планшетах/ПК повертаємо вигляд блоків */
+            .container, .calculator-container {
+                flex-grow: 1; 
+                max-width: 45%; 
+                min-width: 300px;
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px var(--shadow-light); /* Повертаємо тінь */
+                border: 2px solid var(--yellow); /* Повертаємо рамку */
+            }
+            
+            h1 { font-size: 30px; }
+            .link-button { font-size: 17px; }
+        }
+
+        /* 2. ПК / ЛЕПТОПИ (від 1000px) */
+        @media (min-width: 1000px) {
+            .main-wrapper {
+                gap: 50px;
+                flex-wrap: nowrap; 
+            }
+            .container, .calculator-container {
+                max-width: 450px; 
+            }
+            h1 { font-size: 32px; }
+            .link-button { font-size: 18px; }
+            .calculator-container h2 { font-size: 24px; }
+            #result-block #total-price { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        
+        <div class="container">
+            <div class="header">
+                <h1>КОПІСЕРВІС</h1>
+                <p>Виберіть зручний спосіб, щоб **надіслати файли на друк**:</p>
+            </div>
+            <div class="links">
+                <a href="https://t.me/kompdryk" target="_blank" class="link-button primary"><i class="fab fa-telegram-plane"></i> НАДІСЛАТИ ФАЙЛИ ЧЕРЕЗ TELEGRAM</a>
+                <a href="viber://chat?number=+380679781779" target="_blank" class="link-button"><i class="fab fa-viber"></i> Написати у VIBER</a>
+                <a href="https://wa.me/+380679781779" target="_blank" class="link-button"><i class="fab fa-whatsapp"></i> Написати у WHATSAPP</a>
+                <a href="mailto:kompdryk@gmail.com" target="_blank" class="link-button"><i class="fas fa-envelope"></i> Надіслати запит на E-MAIL</a>
+                <a href="http://kompservice.com.ua/" target="_blank" class="link-button"><i class="fas fa-globe"></i> Відвідати НАШ САЙТ</a>
+            </div>
+        </div>
+        
+        <div class="calculator-container">
+            <h2><i class="fas fa-calculator"></i> Калькулятор Послуг</h2>
+            
+            <form class="calc-form">
+                
+                <div class="calc-row">
+                    <label for="service">Виберіть послугу:</label>
+                    <select id="service" onchange="calculatePrice()">
+                        <option value="A4_bw_copy" data-price="4">Роздрук A4 ч/б (копія) - 4 грн.</option>
+                        <option value="A4_color_copy" data-price="8">Роздрук A4 колір (копія) - 8 грн.</option>
+                        <option value="A4_bw_print" data-price="4">Друк на документі A4 ч/б - 4 грн.</option>
+                        <option value="A4_color_print" data-price="16">Друк на документі A4 колір - 16 грн.</option>
+                        <option value="A3_bw_copy" data-price="10">Роздрук A3 ч/б (копія) - 10 грн.</option>
+                        <option value="A3_color_copy" data-price="20">Роздрук A3 колір (копія) - 20 грн.</option>
+                        <option value="Scan_A4_300" data-price="5">Сканування A4 (300 dpi) - 5 грн.</option>
+                        <option value="Lamination_A5" data-price="25">Ламінування A5 - 25 грн.</option>
+                        </select>
+                </div>
+
+                <div class="calc-row">
+                    <label for="quantity">Кількість:</label>
+                    <input type="number" id="quantity" value="1" min="1" oninput="calculatePrice()">
+                </div>
+            </form>
+
+            <div id="result-block">
+                Загальна вартість: <span id="total-price">0.00</span> грн.
+            </div>
+            
+            <p style="font-size: 12px; margin-top: 20px; color: #aaa;">* Калькулятор надає орієнтовний розрахунок. Остаточна ціна узгоджується з менеджером при оформленні замовлення.</p>
+        </div>
+    </div>
+    
+    <script>
+        function calculatePrice() {
+            const serviceSelect = document.getElementById('service');
+            const quantityInput = document.getElementById('quantity');
+            const totalPriceSpan = document.getElementById('total-price');
+
+            const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+            const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price'));
+            const quantity = parseInt(quantityInput.value) || 0; 
+
+            let totalPrice = 0;
+
+            if (pricePerUnit && quantity > 0) {
+                totalPrice = pricePerUnit * quantity;
+            }
+
+            totalPriceSpan.textContent = totalPrice.toFixed(2);
+        }
+
+        window.onload = calculatePrice;
+    </script>
+
+</body>
+</html>
